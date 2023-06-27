@@ -61,8 +61,8 @@ void SystemClock_Config(void);
 extern uint8_t Uart1_RxData;
 
 // 要发送的数据
-  uint8_t sendData[] = {0x01, 0x02, 0x03, 0x04};
-  uint8_t receiveData[4];
+  uint8_t sendData[] = {0x01, 0x02, 0x03, 0x04, 0x05};
+  uint8_t receiveData[5];
   uint16_t TxSize = sizeof(sendData);
 	uint16_t RxSize = sizeof(receiveData);
 	
@@ -102,27 +102,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	HAL_UART_Receive_IT(&huart1,(uint8_t *)&Uart1_RxData, 1); //&取地址
   
-	
-  uint16_t TxRxSize = TxSize + RxSize;
-  // 中断收发
-//  if (HAL_SPI_TransmitReceive_IT(&hspi1, sendData, receiveData, TxRxSize) != HAL_OK)
-//  {
-//    // 数据发送和接收请求失败处理
-//		printf("SPI TXRX ERROR \r\n");
-//  }
-	//中断发
-//  if (HAL_SPI_Transmit_IT(&hspi1, sendData, TxSize) != HAL_OK)
-//  {`
-//    // 数据发送和接收请求失败处理
-//		printf("SPI TX ERROR \r\n");
-//  }
-//  while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY) {}
-	
-	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_RESET);	
-//	HAL_SPI_TransmitReceive_IT(&hspi1, sendData, receiveData, TxRxSize);
-//	HAL_SPI_TransmitReceive(&hspi1, sendData, receiveData, TxRxSize, 100);
-//	HAL_SPI_Transmit_IT(&hspi1, sendData, TxSize);
-//	HAL_SPI_Receive_IT(&hspi1, receiveData, RxSize);
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -130,16 +111,11 @@ int main(void)
   while (1) 
   {
 		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_RESET);	
-//		HAL_SPI_TransmitReceive_IT(&hspi1, sendData, receiveData, TxRxSize);
-//		HAL_SPI_Transmit_IT(&hspi1, sendData, TxSize);
-//		HAL_SPI_TransmitReceive(&hspi1, sendData, receiveData, TxRxSize, 1000);
-		HAL_SPI_Receive(&hspi1, receiveData, 4, 1000);
-		while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){}
+		HAL_SPI_Transmit(&hspi1, sendData, TxSize, 1000);//1s
 		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_SET);	
-		
 			
 		LED_Contrary();
-		HAL_Delay(5500);//500ms
+		HAL_Delay(500);//500ms
 		
     /* USER CODE END WHILE */
 
@@ -189,39 +165,8 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	HAL_SPI_Transmit_IT(&hspi1, sendData, TxSize);
-}
 
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-  // 数据发送完成回调函数
-	if (hspi == &hspi1)
-  {
-//    printf("SPI TX OK \r\n");		
-		HAL_SPI_Receive_IT(&hspi1, receiveData, RxSize);
-//		printf("SendData Data: ");
-//		for (int i = 0; i < 4; i++) {
-//			printf("%02X ", sendData[i]);
-//		}
-//		printf("\r\n");
-  }
-}
 
-void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-  // 数据发送完成回调函数
-	if (hspi == &hspi1)
-	{	
-		printf("SendData Data: ");
-		for (int i = 0; i < 4; i++) {
-			printf("%02X ", receiveData[i]);
-		}
-		printf("\r\n");
-		HAL_SPI_TransmitReceive_IT(&hspi1, sendData, receiveData, 8);
-	}
-}
 /* USER CODE END 4 */
 
 /**
