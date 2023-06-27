@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "spi.h"
 #include "usart.h"
 #include "gpio.h"
@@ -61,10 +62,16 @@ void SystemClock_Config(void);
 extern uint8_t Uart1_RxData;
 
 // 要发送的数据
-  uint8_t sendData[] = {0x05, 0x06, 0x07, 0x08};
-  uint8_t receiveData[5];
-  uint16_t TxSize = sizeof(sendData);
-	uint16_t RxSize = sizeof(receiveData);
+uint8_t sendData[] = {
+  0x01, 0x02, 0x03, 0x04, // 第一个数据包
+  0x05, 0x06, 0x07, 0x08, // 第二个数据包
+  0x09, 0x0A, 0x0B, 0x0C, // 第三个数据包
+  0x0D, 0x0E, 0x0F, 0x10, // 第四个数据包
+};
+
+uint8_t receiveData[20];
+//  uint16_t TxSize = sizeof(sendData);
+//	uint16_t RxSize = sizeof(receiveData);
 	
 
 /* USER CODE END 0 */
@@ -97,14 +104,21 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART1_UART_Init();
-  MX_SPI2_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 	HAL_UART_Receive_IT(&huart1,(uint8_t *)&Uart1_RxData, 1); //&取地址
   
 	
-	//中断收
-	HAL_SPI_Receive_IT(&hspi2, receiveData, RxSize);
+	/* 启动SPI DMA接收 */
+//  if (HAL_SPI_Receive_DMA(&hspi1, receiveData, 8) != HAL_OK)
+//	if (HAL_SPI_Transmit_DMA(&hspi1, sendData, 8) != HAL_OK)
+  if (HAL_SPI_TransmitReceive_DMA(&hspi1, sendData, receiveData, 8) != HAL_OK)  
+	{
+    /* 接收错误处理代码在这里 */
+		return 0;
+  }
 	
 
   /* USER CODE END 2 */
@@ -113,6 +127,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1) 
   {
+		//打印receiveData
+		printf("Received Data: ");
+		for (int i = 0; i < 20; i++) {
+			printf("%02X ", receiveData[i]);
+		}
+		printf("\r\n");
 		
 		LED_Contrary();
 		HAL_Delay(500);//500ms
@@ -164,20 +184,20 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-  // 数据接收完成回调函数
-	if (hspi == &hspi2)
-	{
-		//打印receiveData
-//		printf("Received Data: ");
-//		for (int i = 0; i < 4; i++) {
-//			printf("%02X ", receiveData[i]);
-//		}
-//		printf("\r\n");
-		HAL_SPI_Receive_IT(&hspi2, receiveData, RxSize);
-	}
-}
+//void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
+//{
+//  // 数据接收完成回调函数
+//	if (hspi == &hspi2)
+//	{
+//		//打印receiveData
+////		printf("Received Data: ");
+////		for (int i = 0; i < 4; i++) {
+////			printf("%02X ", receiveData[i]);
+////		}
+////		printf("\r\n");
+//		HAL_SPI_Receive_IT(&hspi2, receiveData, RxSize);
+//	}
+//}
 
 /* USER CODE END 4 */
 

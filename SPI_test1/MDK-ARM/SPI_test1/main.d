@@ -27,6 +27,7 @@ spi_test1\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h
 spi_test1\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 spi_test1\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h
 spi_test1\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
+spi_test1\main.o: ../Core/Inc/dma.h
 spi_test1\main.o: ../Core/Inc/spi.h
 spi_test1\main.o: ../Core/Inc/usart.h
 spi_test1\main.o: ../Core/Inc/gpio.h

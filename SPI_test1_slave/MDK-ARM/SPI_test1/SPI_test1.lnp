@@ -2,6 +2,7 @@
 "spi_test1\startup_stm32f103xb.o"
 "spi_test1\main.o"
 "spi_test1\gpio.o"
+"spi_test1\dma.o"
 "spi_test1\spi.o"
 "spi_test1\usart.o"
 "spi_test1\stm32f1xx_it.o"

@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "spi.h"
 #include "usart.h"
 #include "gpio.h"
@@ -61,10 +62,14 @@ void SystemClock_Config(void);
 extern uint8_t Uart1_RxData;
 
 // 要发送的数据
-  uint8_t sendData[] = {0x01, 0x02, 0x03, 0x04, 0x05};
-  uint8_t receiveData[5];
+uint8_t sendData[] = {
+  0x09, 0x08, 0x07, 0x06, // 第一个数据包
+  0x05, 0x04, 0x03, 0x02, // 第二个数据包
+	0x01,
+};
+  uint8_t receiveData[20];
   uint16_t TxSize = sizeof(sendData);
-	uint16_t RxSize = sizeof(receiveData);
+//	uint16_t RxSize = sizeof(receiveData);
 	
 
 /* USER CODE END 0 */
@@ -97,11 +102,13 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART1_UART_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 	HAL_UART_Receive_IT(&huart1,(uint8_t *)&Uart1_RxData, 1); //&取地址
   
+//	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_RESET);	
 
 
   /* USER CODE END 2 */
@@ -110,10 +117,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1) 
   {
-		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_RESET);	
-		HAL_SPI_Transmit(&hspi1, sendData, TxSize, 1000);//1s
-		HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_SET);	
-			
+//		HAL_SPI_Receive(&hspi1, receiveData, 8, 10);
+//		HAL_SPI_Transmit(&hspi1, sendData, 8, 10);
+		HAL_SPI_TransmitReceive(&hspi1, sendData, receiveData, 8, 10);
+		
 		LED_Contrary();
 		HAL_Delay(500);//500ms
 		
