@@ -31,4 +31,4 @@ spi_test1_master\main.o: ../Core/Inc/dma.h
 spi_test1_master\main.o: ../Core/Inc/spi.h
 spi_test1_master\main.o: ../Core/Inc/usart.h
 spi_test1_master\main.o: ../Core/Inc/gpio.h
-spi_test1_master\main.o: ..\MYCODE\led.h
+spi_test1_master\main.o: ../MYCODE/led.h
