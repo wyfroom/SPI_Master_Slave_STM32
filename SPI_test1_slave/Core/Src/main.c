@@ -122,11 +122,11 @@ int main(void)
   {
 		
 		//¥Ú”°receiveData
-//		printf("Received Data: ");
-//		for (int i = 0; i < 20; i++) {
-//			printf("%02X ", receiveData[i]);
-//		}
-//		printf("\r\n");
+		printf("Received Data: ");
+		for (int i = 0; i < 20; i++) {
+			printf("%02X ", receiveData[i]);
+		}
+		printf("\r\n");
 		
 		//LED…¡À∏
 		LED_Contrary();
