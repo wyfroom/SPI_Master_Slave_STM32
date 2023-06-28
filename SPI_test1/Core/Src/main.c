@@ -63,14 +63,12 @@ extern uint8_t Uart1_RxData;
 
 // 要发送的数据
 uint8_t sendData[] = {
-  0x09, 0x08, 0x07, 0x06, // 第一个数据包
-  0x05, 0x04, 0x03, 0x02, // 第二个数据包
-	0x01,
+  0x21, 0x22, 0x23, 0x24, // 第一个数据包
+  0x25, 0x26, 0x27, 0x28, // 第二个数据包
 };
-  uint8_t receiveData[20];
-  uint16_t TxSize = sizeof(sendData);
-//	uint16_t RxSize = sizeof(receiveData);
-	
+// 要接收的数据
+uint8_t receiveData[20];
+
 
 /* USER CODE END 0 */
 
@@ -106,17 +104,18 @@ int main(void)
   MX_USART1_UART_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-	HAL_UART_Receive_IT(&huart1,(uint8_t *)&Uart1_RxData, 1); //&取地址
+	HAL_UART_Receive_IT(&huart1,(uint8_t *)&Uart1_RxData, 1); //开启串口中断
   
-//	HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_RESET);	
-
-
+//	HAL_Delay(2000);//500ms
+//	HAL_SPI_TransmitReceive_DMA(&hspi1, sendData, receiveData, 8); //发送8个，接收8个，如果开了CRC，DMA方式调用时，Size要加一
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) 
   {
+		//阻塞方式
 //		HAL_SPI_Receive(&hspi1, receiveData, 8, 10);
 //		HAL_SPI_Transmit(&hspi1, sendData, 8, 10);
 		HAL_SPI_TransmitReceive(&hspi1, sendData, receiveData, 8, 10);
